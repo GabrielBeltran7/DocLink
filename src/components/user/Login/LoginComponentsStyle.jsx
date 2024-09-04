@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   recoverText: {
-    color: "#04f9fc",
+    color: "black",
     fontWeight: "bold",
     fontSize:13
   },
