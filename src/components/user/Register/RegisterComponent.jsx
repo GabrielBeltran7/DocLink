@@ -129,7 +129,16 @@ const RegisterComponent = () => {
         mensajeErrorPasswordLength: "",
       });
     } catch (error) {
-      alert("Error al registrar usuario:", error.message);
+      if (error.code === 'auth/email-already-in-use') {
+        setError({
+          ...error,
+          mensajeErrorEmail: "El correo electrónico ya está en uso",
+          mensajeErrorCamposVacios: "",
+          mensajeErrorPassword: "",
+        });
+      } else {
+        alert("Error al registrar usuario:", error.message);
+      }
     }
   };
 
