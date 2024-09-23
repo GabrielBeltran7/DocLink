@@ -9,6 +9,7 @@ import { LoginUser } from "./src/screens/users/Login/LoginUser";
 import { UserRecoverPassword } from "./src/screens/users/UserRecoverPassword/UserRecoverPassword";
 import HomeMain from "./src/screens/home/HomeMain/HomeMain";
 import Account from "./src/screens/users/Acoount/Account";
+import RegisterDocuments from "./src/components/RegisterDocuments/RegisterDocumentsComponent";
 
 const Stack = createNativeStackNavigator();
 export default function App() {
@@ -20,6 +21,12 @@ export default function App() {
             name="LoginUser"
             component={LoginUser}
             options={{ title: "Inicio de Sesion" }}
+          />
+          
+            <Stack.Screen
+            name="RegisterDocuments"
+            component={RegisterDocuments}
+            options={{ title: "Registrar Documento o Placa" }}
           />
 
           <Stack.Screen

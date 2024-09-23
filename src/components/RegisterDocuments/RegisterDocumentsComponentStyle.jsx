@@ -7,8 +7,42 @@ const styles = StyleSheet.create({
     height: "100%", // Alto al 100%
     resizeMode: "cover",  // Asegura que la imagen cubra todo el fondo
   },
-  keyboardAvoidingView: {
-    flex: 1,  // Se expande para llenar el contenedor
+  
+
+  pickerSelectStyles: {
+    inputAndroid: {
+      color: 'black',
+      backgroundColor: '#f9f9f9',
+      paddingVertical: 12,
+      paddingHorizontal: 15,
+      borderWidth: 1,
+      borderColor: '#ccc',
+      borderRadius: 8,
+    },
+    inputIOS: {
+      color: 'black',
+      backgroundColor: '#f9f9f9',
+      paddingVertical: 12,
+      paddingHorizontal: 15,
+      borderWidth: 1,
+      borderColor: '#ccc',
+      borderRadius: 8,
+    },
+    placeholder: {
+      color: '#999',
+    },
+    viewContainer: {
+      backgroundColor: 'white',  // Fondo cuando no está desplegado
+    },
+    inputAndroidContainer: {
+      backgroundColor: 'white',
+    },
+    itemStyle: {
+      color: 'black',  // Color del texto de las opciones
+      backgroundColor: '#ffcccc',  // Fondo para las opciones
+      padding: 10,
+    },
+    dropdownIconColor: '#007bff', // Color para el ícono del dropdown
   },
   scrollViewContent: {
     flexGrow: 1,
@@ -20,11 +54,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 30,
-    marginTop: -50,
+    marginTop: -120, // Ajuste para mejor visualización
     width: "90%",
     backgroundColor: "rgba(255, 255, 255, 0.1)",  // Fondo semitransparente
     borderRadius: 10,
-    
   },
   image: {
     width: 150,
@@ -44,7 +77,7 @@ const styles = StyleSheet.create({
     flex: 1,
     borderBottomWidth: 1,
     borderBottomColor: "black",
-    height: 60,
+    height: 35,
     paddingLeft: 10,
     marginLeft: 10,
   },
@@ -56,12 +89,12 @@ const styles = StyleSheet.create({
   recoverText: {
     color: "black",
     fontWeight: "bold",
-    fontSize:13
+    fontSize: 13,
   },
   button: {
     backgroundColor: "#04f9fc",
     alignItems: "center",
-    marginVertical: 10,
+    marginVertical: 30,
     width: "80%",
     padding: 12,
     borderRadius: 25,
@@ -72,11 +105,14 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: "red",
-    marginTop: 3,
+    marginTop: 5,
     marginBottom: 10,
     textAlign: "center",
   },
 });
 
 export default styles;
+
+
+
 

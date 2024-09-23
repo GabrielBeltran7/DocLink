@@ -24,19 +24,32 @@ const HomeModal = () => {
     navigation.navigate("LoginUser");
   };
 
+const registerDocuments =() =>{
+  navigation.navigate("RegisterDocuments");
+
+}
   return (
     <View style={styles.container}>
+      
       <TouchableOpacity onPress={toggleMenu} style={styles.menuButton}>
         <Icon name="bars" size={24} color="#fff" />
       </TouchableOpacity>
+
       <ModalMenu isVisible={isMenuVisible} onBackdropPress={toggleMenu}>
         <View style={styles.menuContent}>
+       
+
+          <TouchableOpacity onPress={registerDocuments} style={styles.menuItem}>
+            <Text style={styles.menuText}>Registrar Documento o Placa</Text>
+          </TouchableOpacity>
           <TouchableOpacity onPress={toggleMenu} style={styles.menuItem}>
             <Text style={styles.menuText}>Menú</Text>
           </TouchableOpacity>
+
           <TouchableOpacity onPress={deslogueo} style={styles.menuItem}>
             <Text style={styles.menuText}>Desloguearse</Text>
           </TouchableOpacity>
+
         </View>
       </ModalMenu>
     </View>

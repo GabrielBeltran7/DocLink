@@ -1,7 +1,5 @@
 
 
-
-
 import React, { useState } from "react";
 import {
   View,
@@ -25,6 +23,7 @@ import { useNavigation } from "@react-navigation/native";
 const LoginComponents = () => {
   const navigation = useNavigation();
   const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");  // Estado para el error de contraseña
   const [input, setInputs] = useState({
     email: "",
     password: "",
@@ -35,6 +34,16 @@ const LoginComponents = () => {
       ...input,
       [name]: value,
     });
+
+    // Limpiar error de correo cuando el usuario empieza a escribir
+    if (name === "email" && emailError) {
+      setEmailError("");
+    }
+
+    // Limpiar error de contraseña cuando el usuario empieza a escribir
+    if (name === "password" && passwordError) {
+      setPasswordError("");
+    }
   };
 
   const isEmailValid = (email) => {
@@ -51,10 +60,18 @@ const LoginComponents = () => {
   };
 
   const handleSignIn = async () => {
+    // Validación del correo electrónico
     if (!isEmailValid(input.email)) {
       setEmailError("Ingresa un correo válido");
       return;
     }
+
+    // Validación de la contraseña vacía
+    if (input.password.trim() === "") {
+      setPasswordError("Ingresa una contraseña");
+      return;
+    }
+
     try {
       const userCredential = await signInWithEmailAndPassword(
         auth,
@@ -62,30 +79,16 @@ const LoginComponents = () => {
         input.password
       );
       HomeMain();
+      setInputs({
+        email:"",
+        password:""
+      })
     } catch (error) {
-      Alert.alert(
-        "Error",
-        "Por favor revisa el correo o la contraseña",
-        [
-          {
-            text: "OK",
-            style: "default",
-            onPress: () => {},
-          },
-        ],
-        {
-          cancelable: false,
-          titleStyle: {
-            color: "red",
-          },
-          messageStyle: {
-            color: "red",
-          },
-          containerStyle: {
-            backgroundColor: "red",
-          },
-        }
-      );
+      if (error.code === "auth/invalid-login-credentials") {
+        Alert.alert("Error", "Credenciales de inicio de sesión no válidas.");
+      } else if (error.code === "auth/user-not-found") {
+        Alert.alert("Error", "Usuario no encontrado.");
+      }
     }
   };
 
@@ -105,7 +108,7 @@ const LoginComponents = () => {
                 onChangeText={(text) => handleChangeInput("email", text)}
               />
             </View>
-            <Text style={styles.errorText}>{emailError}</Text>
+            {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
             <View style={styles.iconInputContainer}>
               <FontAwesomeIcon icon={faLock} style={styles.inputIcon} />
               <TextInput
@@ -116,6 +119,7 @@ const LoginComponents = () => {
                 onChangeText={(text) => handleChangeInput("password", text)}
               />
             </View>
+            {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
           </View>
           <Text onPress={RecoverPassword} style={styles.forgotPasswordText}>
             ¿Olvidaste tu Contraseña?{" "}
@@ -139,4 +143,130 @@ const LoginComponents = () => {
 };
 
 export default LoginComponents;
+
+// import React, { useState } from "react";
+// import {
+//   View,
+//   Image,
+//   TextInput,
+//   ImageBackground,
+//   Text,
+//   TouchableOpacity,
+//   Alert,
+//   ScrollView,
+// } from "react-native";
+// import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+// import { faEnvelope, faLock } from "@fortawesome/free-solid-svg-icons";
+// import ImageLogin from "../../../../image/ImageLogin/ImageLogin.png";
+// import ImagenFondo from "../../../../image/BackgroundImage/BackgroundImage.png";
+// import styles from "./LoginComponentsStyle";
+// import { signInWithEmailAndPassword } from "firebase/auth";
+// import { auth } from "../../../../api/firebase/FirebaseConfig/FirebaseConfig";
+// import { useNavigation } from "@react-navigation/native";
+
+// const LoginComponents = () => {
+//   const navigation = useNavigation();
+//   const [emailError, setEmailError] = useState("");
+//   const [input, setInputs] = useState({
+//     email: "",
+//     password: "",
+//   });
+
+//   const handleChangeInput = (name, value) => {
+//     setInputs({
+//       ...input,
+//       [name]: value,
+//     });
+
+//     // Limpiar error de correo cuando el usuario empieza a escribir
+//     if (name === "email" && emailError) {
+//       setEmailError("");
+//     }
+//   };
+
+//   const isEmailValid = (email) => {
+//     const emailRegex = /\S+@\S+\.\S+/;
+//     return emailRegex.test(email);
+//   };
+
+//   const HomeMain = () => {
+//     navigation.navigate("HomeMain");
+//   };
+
+//   const RecoverPassword = () => {
+//     navigation.navigate("UserRecoverPassword");
+//   };
+
+//   const handleSignIn = async () => {
+//     if (!isEmailValid(input.email)) {
+//       setEmailError("Ingresa un correo válido");
+//       return;
+//     }
+//     try {
+//       const userCredential = await signInWithEmailAndPassword(
+//         auth,
+//         input.email,
+//         input.password
+//       );
+//       HomeMain();
+//     } catch (error) {
+      
+//       if (error.code === "auth/invalid-login-credentials") {
+//         Alert.alert("Error", "Credenciales de inicio de sesión no válidas.");
+//       } else if (error.code === "auth/user-not-found") {
+//         Alert.alert("Error", "Usuario no encontrado.");
+//       }
+//     }
+//   };
+
+//   return (
+//     <ImageBackground source={ImagenFondo} style={styles.backgroundImage}>
+//       <ScrollView contentContainerStyle={styles.scrollViewContent}>
+//         <View style={styles.container}>
+//           <Image source={ImageLogin} style={styles.image} />
+//           <View style={styles.inputContainer}>
+//             <View style={styles.iconInputContainer}>
+//               <FontAwesomeIcon icon={faEnvelope} style={styles.inputIcon} />
+//               <TextInput
+//                 style={styles.input}
+//                 placeholder="Email"
+//                 keyboardType="email-address"
+//                 value={input.email}
+//                 onChangeText={(text) => handleChangeInput("email", text)}
+//               />
+//             </View>
+//             <Text style={styles.errorText}>{emailError}</Text>
+//             <View style={styles.iconInputContainer}>
+//               <FontAwesomeIcon icon={faLock} style={styles.inputIcon} />
+//               <TextInput
+//                 style={styles.input}
+//                 placeholder="Password"
+//                 secureTextEntry={true}
+//                 value={input.password}
+//                 onChangeText={(text) => handleChangeInput("password", text)}
+//               />
+//             </View>
+//           </View>
+//           <Text onPress={RecoverPassword} style={styles.forgotPasswordText}>
+//             ¿Olvidaste tu Contraseña?{" "}
+//             <Text style={styles.recoverText}>Recupérala</Text>
+//           </Text>
+
+//           <TouchableOpacity onPress={handleSignIn} style={styles.button}>
+//             <Text style={styles.textButton}>Iniciar Sesión</Text>
+//           </TouchableOpacity>
+
+//           <TouchableOpacity
+//             style={styles.button}
+//             onPress={() => navigation.navigate("RegisterUser")}
+//           >
+//             <Text style={styles.textButton}>Crear Cuenta</Text>
+//           </TouchableOpacity>
+//         </View>
+//       </ScrollView>
+//     </ImageBackground>
+//   );
+// };
+
+// export default LoginComponents;
 
