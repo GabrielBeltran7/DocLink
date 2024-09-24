@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Image,
   TextInput,
@@ -7,12 +7,13 @@ import {
   TouchableOpacity,
   ImageBackground,
   ScrollView,
+  Alert, // Añadido para mostrar alertas de error
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import styles from "./RegisterDocumentsComponentStyle";
 import ImageLogin from "../../../image/ImageLogin/ImageLogin.png";
 import ImagenFondo from "../../../image/BackgroundImage/BackgroundImage.png";
-import RNPickerSelect from "react-native-picker-select";
+
 const RegisterDocumentsComponent = () => {
   const [documentType, setDocumentType] = useState("");
   const [documentNumber, setDocumentNumber] = useState("");
@@ -20,12 +21,24 @@ const RegisterDocumentsComponent = () => {
   const [contactName, setContactName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [country, setCountry] = useState("");
+  const [country, setCountry] = useState(""); // Ahora editable
   const [city, setCity] = useState("");
   const [address, setAddress] = useState("");
 
   const handleRegister = () => {
-    // Aquí puedes agregar la lógica de validación y registro como se requiere.
+    // Validación de campos vacíos
+    if (!documentType || !documentNumber || !foundOrLost || !contactName || !email || !phoneNumber || !country || !city || !address) {
+      Alert.alert("Error", "Todos los campos son obligatorios.");
+      return;
+    }
+
+    // Validación de correo electrónico
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      Alert.alert("Error", "Por favor, introduce un correo electrónico válido.");
+      return;
+    }
+
     console.log({
       documentType,
       documentNumber,
@@ -37,6 +50,7 @@ const RegisterDocumentsComponent = () => {
       city,
       address,
     });
+    
     // Limpiar los campos después de un registro exitoso
     setDocumentType("");
     setDocumentNumber("");
@@ -44,22 +58,24 @@ const RegisterDocumentsComponent = () => {
     setContactName("");
     setEmail("");
     setPhoneNumber("");
-    setCountry("");
+    setCountry(""); 
     setCity("");
     setAddress("");
   };
+
+  
 
   return (
     <ImageBackground source={ImagenFondo} style={styles.backgroundImage}>
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         <View style={styles.container}>
-          <Image source={ImageLogin} style={styles.image} />
 
           {/* Tipo de Documento */}
           <View style={styles.inputContainer}>
             <View style={styles.iconInputContainer}>
               <Icon name="id-card" size={20} color="#000" />
               <TextInput
+               autoCapitalize="characters"
                 placeholder="Tipo de Documento o Placa"
                 style={styles.input}
                 value={documentType}
@@ -73,50 +89,29 @@ const RegisterDocumentsComponent = () => {
             <View style={styles.iconInputContainer}>
               <Icon name="id-card-o" size={20} color="#000" />
               <TextInput
-                placeholder="Número de Documento"
+                placeholder="Número de Documento o Placa"
                 style={styles.input}
-                keyboardType="numeric"
+                autoCapitalize="characters"
                 value={documentNumber}
                 onChangeText={setDocumentNumber}
               />
             </View>
           </View>
 
-     {/* Número de Documento */}
-     <View style={styles.inputContainer}>
-  <View style={styles.iconInputContainer}>
-    <Icon name="exclamation-triangle" size={20} color="#000" />
-    <TextInput
-      placeholder="Encontre o Perdi"
-      style={styles.input}
-      keyboardType="default"
-      value={foundOrLost}
-      onChangeText={setFoundOrLost}
-    />
-  </View>
-</View>
-
-
-
-          {/* Selección de Deporte */}
-          {/* <View style={styles.inputContainer}>
-             <Text style={styles.input}>Seleccione una Opccion:</Text> 
-            <RNPickerSelect
-              onValueChange={(value) => setDocumentType(value)}
-              placeholder={{
-                label: "Seleccione una opción",
-                value: null,
-                color: "#999",
-              }}
-              items={[
-                { label: "Encontré", value: "Encontre" },
-                { label: "Perdí", value: "Perdi" },
-              ]}
-              style={styles.pickerSelectStyles}
-              useNativeAndroidPickerStyle={false}
-            />
+          {/* Encontre o Perdi */}
+          <View style={styles.inputContainer}>
+            <View style={styles.iconInputContainer}>
+              <Icon name="exclamation-triangle" size={20} color="#000" />
+              <TextInput
+                placeholder="Encontre o Perdi"
+                 autoCapitalize="characters"
+                style={styles.input}
+                keyboardType="default"
+                value={foundOrLost}
+                onChangeText={setFoundOrLost}
+              />
+            </View>
           </View>
-           */}
 
           {/* Nombre de Contacto */}
           <View style={styles.inputContainer}>
@@ -124,6 +119,7 @@ const RegisterDocumentsComponent = () => {
               <Icon name="user" size={20} color="#000" />
               <TextInput
                 placeholder="Nombre de Contacto"
+                 autoCapitalize="characters"
                 style={styles.input}
                 value={contactName}
                 onChangeText={setContactName}
@@ -137,6 +133,7 @@ const RegisterDocumentsComponent = () => {
               <Icon name="envelope" size={20} color="#000" />
               <TextInput
                 placeholder="Correo Electrónico"
+                 autoCapitalize="characters"
                 keyboardType="email-address"
                 style={styles.input}
                 value={email}
@@ -154,11 +151,7 @@ const RegisterDocumentsComponent = () => {
                 keyboardType="phone-pad"
                 style={styles.input}
                 value={phoneNumber}
-                onChangeText={setPhoneNumber}
-                onEndEditing={() => {
-                  // Aquí puedes agregar lógica para detectar el país por el indicativo
-                  console.log("Detectar país por indicativo");
-                }}
+                onChangeText={setPhoneNumber} // Corregido aquí
               />
             </View>
           </View>
@@ -169,9 +162,10 @@ const RegisterDocumentsComponent = () => {
               <Icon name="globe" size={20} color="#000" />
               <TextInput
                 placeholder="País"
+                 autoCapitalize="characters"
                 style={styles.input}
-                value={country}
-                onChangeText={setCountry}
+                value={country} // Ahora editable
+                onChangeText={setCountry} // Añadido para actualizar el estado
               />
             </View>
           </View>
@@ -185,6 +179,7 @@ const RegisterDocumentsComponent = () => {
                 style={styles.input}
                 value={city}
                 onChangeText={setCity}
+                 autoCapitalize="characters"
               />
             </View>
           </View>
@@ -194,6 +189,7 @@ const RegisterDocumentsComponent = () => {
             <View style={styles.iconInputContainer}>
               <Icon name="map-marker" size={20} color="#000" />
               <TextInput
+               autoCapitalize="characters"
                 placeholder="Dirección"
                 style={styles.input}
                 value={address}
