@@ -1,124 +1,153 @@
 /* eslint-disable no-unused-vars */
 
-import { GET_USER_PROFILE, NEW_PHOTO_USER,  NEW_PHOTO_PICKER,UPDATE_USER_PROFILE} from "./ActionsTypes"
+import { GET_DOCUMENT_ID, UPDATE_DOCUMENT_SUCCESS} from "./ActionsTypes"
 
-import {
-  collection,
-  where,
-  getDocs,
-  query,
-  addDoc,
-  updateDoc
-} from "firebase/firestore";
-import { storage } from "../../api/firebase/FirebaseConfig/FirebaseConfig";
 import {db } from "../../api/firebase/FirebaseConfig/FirebaseConfig";   // Agregamos la importación de storage
-import {  ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
-export const updateUserDate = (input) => {
+import { collection,addDoc, query, where, getDocs, doc, updateDoc } from 'firebase/firestore'; // Asegúrate de tener las importaciones correctas
+
+import { Alert } from "react-native";
+
+export const updateDocument = (UpdateDocuments) => {
+  return async (dispatch) => {
+    // Verifica si UpdateDocuments y el ID están definidos
+    if (!UpdateDocuments || !UpdateDocuments.id) {
+      console.error("El objeto UpdateDocuments o el campo 'id' no está definido");
+      Alert.alert("Error", "Datos incompletos para la actualización.", [{ text: "OK" }]);
+      return;
+    }
+
+    // Verifica que todos los campos requeridos están definidos
+    const requiredFields = [
+      'documentType', 'documentNumber', 'foundOrLost',
+      'contactName', 'email', 'phoneNumber', 'country',
+      'city', 'address'
+    ];
+
+    for (const field of requiredFields) {
+      if (!UpdateDocuments[field]) {
+        console.error(`El campo ${field} no está definido`);
+        Alert.alert("Error", `Falta el campo ${field}.`, [{ text: "OK" }]);
+        return;
+      }
+    }
+
+    try {
+      // Obtén la referencia del documento usando el ID proporcionado
+      const documentRef = doc(db, "DocumentRegister", UpdateDocuments.id); 
+
+      // Actualiza el documento en Firestore
+      await updateDoc(documentRef, {
+        documentType: UpdateDocuments.documentType,
+        documentNumber: UpdateDocuments.documentNumber,
+        foundOrLost: UpdateDocuments.foundOrLost,
+        contactName: UpdateDocuments.contactName,
+        email: UpdateDocuments.email,
+        phoneNumber: UpdateDocuments.phoneNumber,
+        country: UpdateDocuments.country,
+        city: UpdateDocuments.city,
+        address: UpdateDocuments.address,
+      });
+
+      Alert.alert(
+        "Actualización Exitosa",
+        "El documento se ha actualizado correctamente.",
+        [{ text: "OK" }]
+      );
+
+       dispatch({ type: 'UPDATE_DOCUMENT_SUCCESS', payload: UpdateDocuments });
+
+    } catch (error) {
+      console.error("Error al actualizar el documento:", error);
+      Alert.alert(
+        "Error",
+        "No se pudo actualizar el documento. Por favor, inténtalo de nuevo.",
+        [{ text: "OK" }]
+      );
+    }
+  };
+};
+
+
+export const registerDocument = (user) => {
   return async (dispatch) => {
     try {
-      // Crear una referencia a la colección "customers" en Firebase Firestore
-      const customersCollection = collection(db, "customers");
-      // Realizar una consulta para encontrar documentos con el campo "email" igual al proporcionado en "input"
-      const q = query(customersCollection, where("email", "==", input.email));
-      // Esperar a que la consulta se resuelva y obtener un "querySnapshot"
-      const querySnapshot = await getDocs(q);
+      const { documentNumber } = user; // Obtener el número de documento del usuario
+      const customersCollection = collection(db, "DocumentRegister");
 
-      if (!querySnapshot.empty) {
-        // Si se encuentra un documento que coincide con el correo electrónico, obtener su referencia
-        const docRef = querySnapshot.docs[0].ref;
+      // Crear una consulta para verificar si ya existe un documento con el mismo número
+      const q = query(customersCollection, where("documentNumber", "==", documentNumber));
+      const snapshot = await getDocs(q);
 
-        // Crear un objeto "updatedUserData" con las propiedades a actualizar
-        const updatedUserData = {
-          name: input.name,
-          phone: input.phone,
-          email: input.email,
-        };
+      // Si el documento ya existe, mostrar alerta y no registrar
+      if (!snapshot.empty) {
+        Alert.alert(
+          "Documento ya Registrado",
+          "El documento ya se encuentra registrado. Por favor, consulta los datos.",
+          [{ text: "OK" }]
+        );
+        return; // Salir de la función si ya está registrado
+      }
 
-        // Si se proporciona una foto de perfil, convertir la ruta de archivo local en un Blob
-        if (input.photo) {
-          const response = await fetch(input.photo);
-          const blob = await response.blob();
+      // Si no existe, registrar el nuevo documento
+      await addDoc(customersCollection, user);
+      Alert.alert(
+        "Registro Exitoso",
+        "El documento se ha registrado correctamente.",
+        [{ text: "OK" }]
+      );
+      
+    } catch (error) {
+      Alert.alert(
+        "Error",
+        "No se pudo registrar el documento. Por favor, inténtalo de nuevo.",
+        [{ text: "OK" }]
+      );
+    }
+  };
+};
 
-          // Subir el Blob a Firebase Storage
-          const storageRef = ref(storage, `profile_images/${input.email}.jpg`);
-          await uploadBytes(storageRef, blob);
 
-          // Obtener la URL pública de la imagen
-          const downloadURL = await getDownloadURL(storageRef);
+export const searchDocument = (documentNumber) => {
 
-          // Agregar la URL de la imagen al objeto "updatedUserData"
-          updatedUserData.photo = downloadURL;
+  return async (dispatch) => {
+    try {
+      // Crear la consulta para buscar el documento donde documentNumber sea igual al proporcionado
+      const q = query(collection(db, "DocumentRegister"), where("documentNumber", "==", documentNumber));
+      const snapshot = await getDocs(q);
+
+      if (snapshot.empty) {
+        // Si no se encuentra el documento, despachar error
+        Alert.alert(
+          "Documento o Placa no Encontrado",
+          "DEBE REGISTRALO.",
+          [{ text: "OK" }]
+        );
+        
+        return;
+      }
+      // Si se encuentra, despachar los resultados
+      snapshot.forEach((doc) => {
+        const documentData = { id: doc.id, ...doc.data() };
+
+        
+        if (documentData.contactName) {
         }
 
-        // Actualizar el documento en Firestore con los datos en "updatedUserData"
-        await updateDoc(docRef, updatedUserData);
+        dispatch({ type: "GET_DOCUMENT_ID", payload: documentData });
+        console.log("333333333333333333", documentData)
 
-        // Actualizar el estado de Redux con los datos actualizados
-        dispatch({
-          type: UPDATE_USER_PROFILE,
-          payload: updatedUserData,
-        });
-      } else {
-        // Si no se encuentra un documento con el correo electrónico proporcionado, registrar un mensaje de consola
-        console.log("No se encontraron resultados para el correo electrónico");
-      }
-    } catch (error) {
-      // Capturar y registrar cualquier error que ocurra durante la ejecución
-      console.error(error);
-    }
-  };
-};
+        
 
-export const getUserProfile = (email) => {
-  return async (dispatch) => {
-    try {
+      });
       
-      const customersCollection = collection(db, "customers");
-      const q = query(customersCollection, where("email", "==", email));
-      const querySnapshot = await getDocs(q);
-
-      if (!querySnapshot.empty) {
-        const userData = querySnapshot.docs[0].data();
-        dispatch({ type: GET_USER_PROFILE, payload: userData });
-      } else {
-        console.log("No se encontraron resultados para el correo electrónico");
-      }
     } catch (error) {
-      console.error(error);
-    }
-  };
-};
-export const dispatchImagePicker = (image) => {
-  return async (dispatch) =>{
-    dispatch({
-      type: NEW_PHOTO_PICKER,
-      payload: image
-    })
-  }
-}
-
-
-
-export  const dispatchImage =(newphoto) =>{
-  return async (dispatch) =>{
-    dispatch({
-      type: NEW_PHOTO_USER,
-      payload: newphoto
-    })
-  }
-
-}
-
-export const postUser = (user) => {
-  
-  return async (dispatch) => {
-    try {
-      const firestore = getFirestore();
-      const customersCollection = collection(firestore, "customers");
-      await addDoc(customersCollection, user);
-    } catch (error) {
-      console.error(error);
+      Alert.alert(
+        "Error",
+        "Al buscar el documento.",
+        [{ text: "OK" }]
+      );
+      
     }
   };
 };

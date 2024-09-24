@@ -1,6 +1,6 @@
 import React from 'react'
 import {
-    View,
+    View,Text
  
   } from "react-native";
 import HomeComponentsMain from '../../../components/home/HomeComponentMain/HomeComponentsMain'
@@ -9,9 +9,9 @@ import HomeComponentsMain from '../../../components/home/HomeComponentMain/HomeC
 const HomeMain = () => {
   return (
     <View>
+  <HomeComponentsMain />
+</View>
 
-        <HomeComponentsMain/>
-        </View>
   )
 }
 

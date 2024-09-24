@@ -5,20 +5,13 @@ import { getUserProfile } from '../../../Redux/Actions';
 import { auth } from '../../../../api/firebase/FirebaseConfig/FirebaseConfig';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+import HomeVistaContactos from '../HomeVistaContacto/HomeVistaContactos';
 
 const HomeComponentsMain = () => {
-//   dispatch = useDispatch()
-//   const dateUser = auth.currentUser;
-//   const userEmail = dateUser ? dateUser.email : '';
-
-// console.log(dateUser)
-//       useEffect(()=>{
-//         dispatch(getUserProfile(userEmail))
-//           },[])
-     
   return (
     <View>
       <HomeNanvar />
+      <HomeVistaContactos />
     </View>
   );
 };

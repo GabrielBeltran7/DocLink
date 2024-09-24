@@ -1,38 +1,22 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-fallthrough */
-import {GET_USER_PROFILE, NEW_PHOTO_USER,  NEW_PHOTO_PICKER, UPDATE_USER_PROFILE} from "./ActionsTypes"
+import { GET_DOCUMENT_ID, UPDATE_DOCUMENT_SUCCESS } from "./ActionsTypes";
 
 let inicialState = {
-  userdate:[],
-  newphotouser:[]
+  documentidData: {} // Cambiado a objeto
 };
-
 
 const rootReducer = (state = inicialState, action) => {
   switch (action.type) {
 
-    case GET_USER_PROFILE:
-      return{
+    case GET_DOCUMENT_ID:
+      return {
         ...state,
-        userdata:action.payload,
-      }
-      case NEW_PHOTO_USER:
-        return{
+        documentidData: action.payload // Almacena el documento encontrado
+      };
+      case UPDATE_DOCUMENT_SUCCESS:
+        return {
           ...state,
-          newphotouser:action.payload
-        }
-        
-        case UPDATE_USER_PROFILE:
-      return{
-        ...state,
-        userdata:action.payload,
-      }
-
-        case NEW_PHOTO_PICKER:
-          return{
-            ...state,
-            newphotouser:action.payload
-          }
+          documentidData: action.payload // Almacena el documento encontrado
+        };
 
     default:
       return state;
@@ -40,6 +24,7 @@ const rootReducer = (state = inicialState, action) => {
 };
 
 export default rootReducer;
+
 
 
 

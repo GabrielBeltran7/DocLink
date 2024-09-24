@@ -8,9 +8,8 @@ import { store } from "./src/Redux/Store";
 import { LoginUser } from "./src/screens/users/Login/LoginUser";
 import { UserRecoverPassword } from "./src/screens/users/UserRecoverPassword/UserRecoverPassword";
 import HomeMain from "./src/screens/home/HomeMain/HomeMain";
-import Account from "./src/screens/users/Acoount/Account";
 import RegisterDocuments from "./src/components/RegisterDocuments/RegisterDocumentsComponent";
-
+import UpdateComponentsDocuments from "./src/components/UpdateDocuments/UpdateComponentsDocuments";
 const Stack = createNativeStackNavigator();
 export default function App() {
   return (
@@ -28,6 +27,11 @@ export default function App() {
             component={RegisterDocuments}
             options={{ title: "Registrar Documento o Placa" }}
           />
+             <Stack.Screen
+            name="UpdateComponentsDocuments"
+            component={UpdateComponentsDocuments}
+            options={{ title: "Actualizar Documentos" }}
+          />
 
           <Stack.Screen
             name="UserRecoverPassword"
@@ -35,11 +39,6 @@ export default function App() {
             options={{ title: "Recuperar Contraseña" }}
           />
 
-          <Stack.Screen
-            name="Account"
-            component={Account}
-            options={{ title: "Cuenta" }}
-          />
 
           <Stack.Screen
             name="HomeMain"
