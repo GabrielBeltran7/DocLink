@@ -10,6 +10,7 @@ import { UserRecoverPassword } from "./src/screens/users/UserRecoverPassword/Use
 import HomeMain from "./src/screens/home/HomeMain/HomeMain";
 import RegisterDocuments from "./src/components/RegisterDocuments/RegisterDocumentsComponent";
 import UpdateComponentsDocuments from "./src/components/UpdateDocuments/UpdateComponentsDocuments";
+import HomeComponentChat from "./src/components/home/HomeComponentChat/HomeComponentChat";
 const Stack = createNativeStackNavigator();
 export default function App() {
   return (
@@ -27,6 +28,19 @@ export default function App() {
             component={RegisterDocuments}
             options={{ title: "Registrar Documento o Placa" }}
           />
+<Stack.Screen
+  name="HomeComponentChat"
+  component={HomeComponentChat}
+  options={{ 
+    title: "", 
+    headerBackVisible: false, // Oculta la flecha de retroceso
+    headerLeft: () => null
+  }}
+/>
+
+
+
+
              <Stack.Screen
             name="UpdateComponentsDocuments"
             component={UpdateComponentsDocuments}

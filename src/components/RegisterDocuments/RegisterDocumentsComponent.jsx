@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react"; // Asegúrate de importar useEffect
 import {
   Image,
   TextInput,
@@ -15,8 +15,10 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import styles from "./RegisterDocumentsComponentStyle";
 import ImageLogin from "../../../image/ImageLogin/ImageLogin.png";
 import ImagenFondo from "../../../image/BackgroundImage/BackgroundImage.png";
+import { getAuth } from "firebase/auth"; // Importa getAuth
 
 const RegisterDocumentsComponent = () => {
+  
   const [documentType, setDocumentType] = useState("");
   const [documentNumber, setDocumentNumber] = useState("");
   const [foundOrLost, setFoundOrLost] = useState("");
@@ -26,9 +28,21 @@ const RegisterDocumentsComponent = () => {
   const [country, setCountry] = useState("");
   const [city, setCity] = useState("");
   const [address, setAddress] = useState("");
+  const [otherUserId, setOtherUserId] = useState(""); // Inicializa como cadena vacía
   const [fecha, setFecha] = useState(new Date().toISOString().split('T')[0]); // Estado para la fecha
 
   const dispatch = useDispatch(); // Crear dispatch
+
+  const auth = getAuth(); // Obtén el objeto de autenticación
+  const user = auth.currentUser; // Obtén el usuario actual
+  const chatId = user ? user.uid : ""; // Asegúrate de que el usuario esté disponible antes de obtener su UID
+
+  useEffect(() => {
+    // Establece otherUserId solo una vez cuando el componente se monta
+    if (chatId) {
+      setOtherUserId(chatId);
+    }
+  }, [chatId]); // Dependencia en chatId
 
   const handleRegister = () => {
     // Validación de campos vacíos
@@ -41,7 +55,8 @@ const RegisterDocumentsComponent = () => {
       !phoneNumber ||
       !country ||
       !city ||
-      !address
+      !address ||
+      !otherUserId
     ) {
       Alert.alert("Error", "Todos los campos son obligatorios.");
       return;
@@ -65,7 +80,8 @@ const RegisterDocumentsComponent = () => {
       country,
       city,
       address,
-      fecha, // Añadir la fecha al objeto de datos
+      fecha, 
+      otherUserId // Asegúrate de que esto esté configurado correctamente
     };
 
     dispatch(registerDocument(documentData));
@@ -136,7 +152,7 @@ const RegisterDocumentsComponent = () => {
             <View style={styles.iconInputContainer}>
               <Icon name="user" size={20} color="#000" />
               <TextInput
-              keyboardType="email-address"
+                keyboardType="email-address"
                 autoCapitalize="characters"
                 placeholder="Nombre de Contacto"
                 style={styles.input}
@@ -168,7 +184,6 @@ const RegisterDocumentsComponent = () => {
               <TextInput
                 placeholder="Número de Teléfono"
                 keyboardType="phone-pad"
-                
                 style={styles.input}
                 value={phoneNumber}
                 onChangeText={setPhoneNumber}
@@ -231,6 +246,8 @@ const RegisterDocumentsComponent = () => {
 };
 
 export default RegisterDocumentsComponent;
+
+
 
 // import React, { useState } from "react";
 // import {
