@@ -12,7 +12,6 @@ export const updateDocument = (UpdateDocuments) => {
   return async (dispatch) => {
     // Verifica si UpdateDocuments y el ID están definidos
     if (!UpdateDocuments || !UpdateDocuments.id) {
-      console.error("El objeto UpdateDocuments o el campo 'id' no está definido");
       Alert.alert("Error", "Datos incompletos para la actualización.", [{ text: "OK" }]);
       return;
     }
@@ -58,7 +57,6 @@ export const updateDocument = (UpdateDocuments) => {
        dispatch({ type: 'UPDATE_DOCUMENT_SUCCESS', payload: UpdateDocuments });
 
     } catch (error) {
-      console.error("Error al actualizar el documento:", error);
       Alert.alert(
         "Error",
         "No se pudo actualizar el documento. Por favor, inténtalo de nuevo.",
@@ -123,7 +121,8 @@ export const searchDocument = (documentNumber) => {
           "DEBE REGISTRALO.",
           [{ text: "OK" }]
         );
-        
+        dispatch({ type: "GET_DOCUMENT_ID", payload: null });
+
         return;
       }
       // Si se encuentra, despachar los resultados
@@ -135,7 +134,6 @@ export const searchDocument = (documentNumber) => {
         }
 
         dispatch({ type: "GET_DOCUMENT_ID", payload: documentData });
-        console.log("333333333333333333", documentData)
 
         
 

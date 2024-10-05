@@ -32,11 +32,20 @@ export default function App() {
   name="HomeComponentChat"
   component={HomeComponentChat}
   options={{ 
-    title: "", 
+    title: "Chat DocLink", 
     headerBackVisible: false, // Oculta la flecha de retroceso
-    headerLeft: () => null
+    headerLeft: () => null,
+    headerTitleAlign: 'center', // Centra el título
+    headerStyle: {
+      height: 20, // Ajusta la altura del encabezado
+    },
+    headerTitleStyle: {
+      color: 'black', // Cambia el color del texto
+    },
   }}
 />
+
+
 
 
 

@@ -1,17 +1,19 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, Text, TextInput, TouchableOpacity, FlatList } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, FlatList, ActivityIndicator } from "react-native";
 import { collection, addDoc, query, orderBy, onSnapshot, updateDoc, doc } from "firebase/firestore"; // Firestore imports
 import { db } from "../../../../api/firebase/FirebaseConfig/FirebaseConfig"; // Firebase config
 import { getAuth } from "firebase/auth"; // Firebase Auth
 import styles from "./HomeComponentChatStyle";
 import Icon from 'react-native-vector-icons/FontAwesome'; 
 
-function HomeComponentChat({ route }) {
+function HomeComponentChat({ navigation, route }) {
   const [message, setMessage] = useState(""); // Para almacenar el mensaje actual
   const [messages, setMessages] = useState([]); // Para almacenar la lista de mensajes
+  const [loading, setLoading] = useState(true); // Para manejar el estado de carga
   const auth = getAuth(); // Obtener información del usuario actual
   const currentUser = auth.currentUser ? auth.currentUser.uid : null; // ID del usuario actual
   const { documentNumber } = route.params; // Obtener el documentNumber desde params
+  const { documentType} = route.params;
   const flatListRef = useRef(null); // Crear una referencia para el FlatList
 
   // Escuchar los mensajes en tiempo real desde Firestore
@@ -25,6 +27,7 @@ function HomeComponentChat({ route }) {
         ...doc.data(),
       }));
       setMessages(messagesList); // Actualiza la lista de mensajes
+      setLoading(false); // Cambiar el estado de carga a false
 
       // Marcar los mensajes como leídos cuando se reciben
       messagesList.forEach((message) => {
@@ -115,20 +118,37 @@ function HomeComponentChat({ route }) {
   // Deshabilitar el botón de enviar si el mensaje está vacío
   const isSendButtonDisabled = !message.trim() || !currentUser;
 
+  const capitalizeFirstLetter = (text) => {
+    if (!text) return ''; // Maneja el caso de texto vacío
+    return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+  };
+  
+
   return (
     <View style={styles.container}>
+      {/* Barra de título con botón de retroceso */}
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Icon name="reply" size={20} color="#000000" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Por {capitalizeFirstLetter(documentType)} {documentNumber.toLowerCase()}</Text>
+        </View>
+
       {/* Lista de mensajes */}
-      <FlatList 
-        ref={flatListRef} // Asignar la referencia al FlatList
-        data={messages} 
-        renderItem={renderMessage} 
-        keyExtractor={(item) => item.id} 
-        style={styles.chatContainer} 
-      />
+      {loading ? (
+        <ActivityIndicator size="large" color="#0000ff" style={styles.loadingIndicator} />
+      ) : (
+        <FlatList 
+          ref={flatListRef} // Asignar la referencia al FlatList
+          data={messages} 
+          renderItem={renderMessage} 
+          keyExtractor={(item) => item.id} 
+          style={styles.chatContainer} 
+        />
+      )}
 
       {/* Zona de entrada de texto */}
       <View style={styles.inputContainer}>
-        {/* Eliminar el icono de la carita */}
         <TextInput 
           style={styles.input} 
           placeholder="Escribe un mensaje" 
@@ -136,7 +156,7 @@ function HomeComponentChat({ route }) {
           onChangeText={setMessage} 
         />
         <TouchableOpacity onPress={sendMessage} style={styles.sendButton} disabled={isSendButtonDisabled}>
-          <Icon name="send" size={24} color="#fff" />
+          <Icon name="send" size={24} color="black" />
         </TouchableOpacity>
       </View>
     </View>
@@ -144,3 +164,4 @@ function HomeComponentChat({ route }) {
 }
 
 export default HomeComponentChat;
+
