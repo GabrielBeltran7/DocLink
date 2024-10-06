@@ -1,5 +1,4 @@
 import { StyleSheet } from "react-native";
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -8,12 +7,12 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#ECE5DD",
   },
   headerTitle: {
     fontSize: 20,
     padding: 10,
-    backgroundColor: "transparent", // Cambiado a transparente
+    backgroundColor: "transparent",
     color: "black",
   },
   chatContainer: {
@@ -25,9 +24,9 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     marginVertical: 5,
-    marginBottom: 90, // Agregado para margen inferior
     maxWidth: "75%",
     alignSelf: "flex-start",
+    marginTop: 20,
   },
   sentMessage: {
     backgroundColor: "#DCF8C6",
@@ -36,6 +35,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     maxWidth: "75%",
     alignSelf: "flex-end",
+    marginTop: 20,
   },
   messageText: {
     fontSize: 16,
@@ -50,7 +50,6 @@ const styles = StyleSheet.create({
   checkIconContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 5,
   },
   checksWrapper: {
     flexDirection: "row",
@@ -60,31 +59,39 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     padding: 10,
-    borderTopWidth: 1,
-    borderTopColor: "#cccccc",
+    backgroundColor: "#ECE5DD",
+    borderRadius: 15,
+    shadowColor: "#000",
   },
   input: {
     flex: 1,
-    height: 40,
-    borderColor: "#cccccc",
+    minHeight: 40,
+    maxHeight: 100,
+    borderColor: "#C0C0C0",
     borderWidth: 1,
     borderRadius: 20,
-    paddingHorizontal: 10,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
     marginRight: 10,
     backgroundColor: "#FFFFFF",
+    fontSize: 16,
+    color: "#333333",
+    fontFamily: "System",
+    elevation: 2,
   },
   sendButton: {
-    backgroundColor: "#0084ff",
-    borderRadius: 20,
-    padding: 10,
+    backgroundColor: "#00FFFF",
+    borderRadius: 50,
+    padding: 15,
   },
   senderName: {
-    fontWeight: 'bold',
-    color: 'blue', // Color para "Usuario"
+    fontWeight: "bold",
+    color: "blue",
   },
   senderNameMe: {
-    fontWeight: 'bold',
-    color: 'blue', // Color para "Yo"
+    fontWeight: "bold",
+    color: "blue",
+    marginTop: 0,
   },
   loadingIndicator: {
     marginTop: 20,

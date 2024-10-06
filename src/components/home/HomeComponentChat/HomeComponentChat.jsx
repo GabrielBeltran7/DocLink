@@ -1,10 +1,25 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, Text, TextInput, TouchableOpacity, FlatList, ActivityIndicator } from "react-native";
-import { collection, addDoc, query, orderBy, onSnapshot, updateDoc, doc } from "firebase/firestore"; // Firestore imports
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  FlatList,
+  ActivityIndicator,
+} from "react-native";
+import {
+  collection,
+  addDoc,
+  query,
+  orderBy,
+  onSnapshot,
+  updateDoc,
+  doc,
+} from "firebase/firestore"; // Firestore imports
 import { db } from "../../../../api/firebase/FirebaseConfig/FirebaseConfig"; // Firebase config
 import { getAuth } from "firebase/auth"; // Firebase Auth
 import styles from "./HomeComponentChatStyle";
-import Icon from 'react-native-vector-icons/FontAwesome'; 
+import Icon from "react-native-vector-icons/FontAwesome";
 
 function HomeComponentChat({ navigation, route }) {
   const [message, setMessage] = useState(""); // Para almacenar el mensaje actual
@@ -36,16 +51,28 @@ function HomeComponentChat({ navigation, route }) {
 
       // Marcar los mensajes como leídos cuando se reciben
       messagesList.forEach((message) => {
-        if (message.senderId !== currentUser && !message.readBy?.includes(currentUser)) {
-          updateDoc(doc(db, "groupChats", documentNumber, "messages", message.id), {
-            readBy: [...(message.readBy || []), currentUser], // Agregar el userId a los que han leído
-          });
+        if (
+          message.senderId !== currentUser &&
+          !message.readBy?.includes(currentUser)
+        ) {
+          updateDoc(
+            doc(db, "groupChats", documentNumber, "messages", message.id),
+            {
+              readBy: [...(message.readBy || []), currentUser], // Agregar el userId a los que han leído
+            }
+          );
         }
 
-        if (message.senderId !== currentUser && !message.deliveredTo?.includes(currentUser)) {
-          updateDoc(doc(db, "groupChats", documentNumber, "messages", message.id), {
-            deliveredTo: [...(message.deliveredTo || []), currentUser], // Agregar el userId a los que han recibido
-          });
+        if (
+          message.senderId !== currentUser &&
+          !message.deliveredTo?.includes(currentUser)
+        ) {
+          updateDoc(
+            doc(db, "groupChats", documentNumber, "messages", message.id),
+            {
+              deliveredTo: [...(message.deliveredTo || []), currentUser], // Agregar el userId a los que han recibido
+            }
+          );
         }
       });
     });
@@ -62,7 +89,8 @@ function HomeComponentChat({ navigation, route }) {
 
   // Enviar mensaje a Firestore
   const sendMessage = async () => {
-    if (message.trim().length > 0 && currentUser) { // Asegúrate de que currentUser no sea null
+    if (message.trim().length > 0 && currentUser) {
+      // Asegúrate de que currentUser no sea null
       try {
         await addDoc(collection(db, "groupChats", documentNumber, "messages"), {
           text: message,
@@ -81,20 +109,35 @@ function HomeComponentChat({ navigation, route }) {
 
   // Renderizar cada mensaje en la lista
   const renderMessage = ({ item }) => {
-    const messageTime = item.timestamp && item.timestamp.seconds 
-      ? new Date(item.timestamp.seconds * 1000) 
-      : new Date(); 
+    const messageTime =
+      item.timestamp && item.timestamp.seconds
+        ? new Date(item.timestamp.seconds * 1000)
+        : new Date();
 
     const isDelivered = item.deliveredTo && item.deliveredTo.length > 0;
     const isRead = item.readBy && item.readBy.length > 1; // Leído por alguien más
 
     return (
-      <View style={item.senderId === currentUser ? styles.sentMessage : styles.receivedMessage}>
-        <Text style={item.senderId === currentUser ? styles.senderNameMe : styles.senderName}>
-          {item.senderId === currentUser ? email : item.senderEmail} 
+      <View
+        style={
+          item.senderId === currentUser
+            ? styles.sentMessage
+            : styles.receivedMessage
+        }
+      >
+        <Text
+          style={
+            item.senderId === currentUser
+              ? styles.senderNameMe
+              : styles.senderName
+          }
+        >
+          {item.senderId === currentUser ? email : item.senderEmail}
         </Text>
         <Text style={styles.messageText}>{item.text}</Text>
-        <Text style={styles.messageTime}>{messageTime.toLocaleTimeString()}</Text>
+        <Text style={styles.messageTime}>
+          {messageTime.toLocaleTimeString()}
+        </Text>
 
         {item.senderId === currentUser && (
           <View style={styles.checkIconContainer}>
@@ -116,11 +159,9 @@ function HomeComponentChat({ navigation, route }) {
       </View>
     );
   };
-
   const isSendButtonDisabled = !message.trim() || !currentUser;
-
   const capitalizeFirstLetter = (text) => {
-    if (!text) return ''; 
+    if (!text) return "";
     return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
   };
 
@@ -130,29 +171,41 @@ function HomeComponentChat({ navigation, route }) {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon name="reply" size={20} color="#000000" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Por {capitalizeFirstLetter(documentType)} {documentNumber.toLowerCase()}</Text>
+        <Text style={styles.headerTitle}>
+          Por {capitalizeFirstLetter(documentType)}{" "}
+          {documentNumber.toLowerCase()}
+        </Text>
       </View>
 
       {loading ? (
-        <ActivityIndicator size="large" color="#0000ff" style={styles.loadingIndicator} />
+        <ActivityIndicator
+          size="large"
+          color="#0000ff"
+          style={styles.loadingIndicator}
+        />
       ) : (
-        <FlatList 
-          ref={flatListRef} 
-          data={messages} 
-          renderItem={renderMessage} 
-          keyExtractor={(item) => item.id} 
-          style={styles.chatContainer} 
+        <FlatList
+          ref={flatListRef}
+          data={messages}
+          renderItem={renderMessage}
+          keyExtractor={(item) => item.id}
+          style={styles.chatContainer}
         />
       )}
 
       <View style={styles.inputContainer}>
-        <TextInput 
-          style={styles.input} 
-          placeholder="Escribe un mensaje" 
-          value={message} 
-          onChangeText={setMessage} 
+        <TextInput
+          style={styles.input}
+          placeholder="Escribe un mensaje"
+          value={message}
+          onChangeText={setMessage}
+          multiline={true} // Permitir varias líneas
         />
-        <TouchableOpacity onPress={sendMessage} style={styles.sendButton} disabled={isSendButtonDisabled}>
+        <TouchableOpacity
+          onPress={sendMessage}
+          style={styles.sendButton}
+          disabled={isSendButtonDisabled}
+        >
           <Icon name="send" size={24} color="black" />
         </TouchableOpacity>
       </View>
@@ -161,4 +214,3 @@ function HomeComponentChat({ navigation, route }) {
 }
 
 export default HomeComponentChat;
- 
