@@ -19,11 +19,15 @@ function HomeVistaContactos() {
   };
 
   const auth = getAuth(); // Obtén el objeto de autenticación
-  
+  const currentUser = auth.currentUser;
+  const email = currentUser.email; // Extraer el correo electrónico
+
   const handleViewComent = () => {
     navigation.navigate("HomeComponentChat", {
       documentNumber: documentNumber, 
-      documentType: documentType
+      documentType: documentType,
+      email:email
+
     });
   };
 

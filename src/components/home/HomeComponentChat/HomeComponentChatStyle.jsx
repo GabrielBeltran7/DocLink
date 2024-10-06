@@ -10,10 +10,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#F5F5F5",
   },
-
   headerTitle: {
     fontSize: 20,
-
     padding: 10,
     backgroundColor: "transparent", // Cambiado a transparente
     color: "black",
@@ -55,32 +53,38 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   checksWrapper: {
-    flexDirection: "row", // Para alinear los checks horizontalmente
-    alignItems: "center",
-    marginLeft: 5, // Espacio entre los dos checks
+    flexDirection: "row",
+    marginLeft: 5,
   },
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#fff",
-    paddingVertical: 10,
-    paddingHorizontal: 15,
+    padding: 10,
     borderTopWidth: 1,
-    borderTopColor: "#ddd",
+    borderTopColor: "#cccccc",
   },
   input: {
     flex: 1,
-    padding: 10,
-    borderRadius: 20,
+    height: 40,
+    borderColor: "#cccccc",
     borderWidth: 1,
-    borderColor: "#ddd",
+    borderRadius: 20,
+    paddingHorizontal: 10,
     marginRight: 10,
-    backgroundColor: "#f0f0f0",
+    backgroundColor: "#FFFFFF",
   },
   sendButton: {
-    backgroundColor: "#04f9fc",
+    backgroundColor: "#0084ff",
     borderRadius: 20,
     padding: 10,
+  },
+  senderName: {
+    fontWeight: 'bold',
+    color: 'blue', // Color para "Usuario"
+  },
+  senderNameMe: {
+    fontWeight: 'bold',
+    color: 'blue', // Color para "Yo"
   },
   loadingIndicator: {
     marginTop: 20,

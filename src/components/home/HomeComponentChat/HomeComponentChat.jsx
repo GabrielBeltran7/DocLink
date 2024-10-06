@@ -11,9 +11,14 @@ function HomeComponentChat({ navigation, route }) {
   const [messages, setMessages] = useState([]); // Para almacenar la lista de mensajes
   const [loading, setLoading] = useState(true); // Para manejar el estado de carga
   const auth = getAuth(); // Obtener información del usuario actual
+
+  const user = auth.currentUser;
+  const email = user.email; // Extraer el correo electrónico
   const currentUser = auth.currentUser ? auth.currentUser.uid : null; // ID del usuario actual
+
   const { documentNumber } = route.params; // Obtener el documentNumber desde params
-  const { documentType} = route.params;
+  const { documentType } = route.params;
+
   const flatListRef = useRef(null); // Crear una referencia para el FlatList
 
   // Escuchar los mensajes en tiempo real desde Firestore
@@ -63,6 +68,7 @@ function HomeComponentChat({ navigation, route }) {
           text: message,
           timestamp: new Date(), // Almacena la fecha y hora actual
           senderId: currentUser, // ID del remitente
+          senderEmail: email, // Guarda el correo electrónico del remitente
           deliveredTo: [], // Inicialmente no ha sido entregado a nadie
           readBy: [currentUser], // El propio remitente ha leído su mensaje
         });
@@ -75,34 +81,30 @@ function HomeComponentChat({ navigation, route }) {
 
   // Renderizar cada mensaje en la lista
   const renderMessage = ({ item }) => {
-    // Asegúrate de que el timestamp sea un objeto Date válido
     const messageTime = item.timestamp && item.timestamp.seconds 
-      ? new Date(item.timestamp.seconds * 1000) // Convierte Firestore timestamp a Date
-      : new Date(); // Si no hay timestamp, utiliza la fecha actual como respaldo
+      ? new Date(item.timestamp.seconds * 1000) 
+      : new Date(); 
 
     const isDelivered = item.deliveredTo && item.deliveredTo.length > 0;
     const isRead = item.readBy && item.readBy.length > 1; // Leído por alguien más
 
     return (
       <View style={item.senderId === currentUser ? styles.sentMessage : styles.receivedMessage}>
+        <Text style={item.senderId === currentUser ? styles.senderNameMe : styles.senderName}>
+          {item.senderId === currentUser ? email : item.senderEmail} 
+        </Text>
         <Text style={styles.messageText}>{item.text}</Text>
         <Text style={styles.messageTime}>{messageTime.toLocaleTimeString()}</Text>
 
-        {/* Icono de los checks para el estado de lectura */}
         {item.senderId === currentUser && (
           <View style={styles.checkIconContainer}>
-            {/* Un solo check para enviado */}
             {!isDelivered && <Icon name="check" size={18} color="#999" />}
-            
-            {/* Dos checks grises para entregado */}
             {isDelivered && !isRead && (
               <View style={styles.checksWrapper}>
                 <Icon name="check" size={18} color="#999" />
                 <Icon name="check" size={18} color="#999" />
               </View>
             )}
-            
-            {/* Dos checks azules para leído */}
             {isRead && (
               <View style={styles.checksWrapper}>
                 <Icon name="check" size={18} color="#4FC3F7" />
@@ -115,31 +117,27 @@ function HomeComponentChat({ navigation, route }) {
     );
   };
 
-  // Deshabilitar el botón de enviar si el mensaje está vacío
   const isSendButtonDisabled = !message.trim() || !currentUser;
 
   const capitalizeFirstLetter = (text) => {
-    if (!text) return ''; // Maneja el caso de texto vacío
+    if (!text) return ''; 
     return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
   };
-  
 
   return (
     <View style={styles.container}>
-      {/* Barra de título con botón de retroceso */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon name="reply" size={20} color="#000000" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Por {capitalizeFirstLetter(documentType)} {documentNumber.toLowerCase()}</Text>
-        </View>
+      </View>
 
-      {/* Lista de mensajes */}
       {loading ? (
         <ActivityIndicator size="large" color="#0000ff" style={styles.loadingIndicator} />
       ) : (
         <FlatList 
-          ref={flatListRef} // Asignar la referencia al FlatList
+          ref={flatListRef} 
           data={messages} 
           renderItem={renderMessage} 
           keyExtractor={(item) => item.id} 
@@ -147,7 +145,6 @@ function HomeComponentChat({ navigation, route }) {
         />
       )}
 
-      {/* Zona de entrada de texto */}
       <View style={styles.inputContainer}>
         <TextInput 
           style={styles.input} 
@@ -164,4 +161,3 @@ function HomeComponentChat({ navigation, route }) {
 }
 
 export default HomeComponentChat;
-
