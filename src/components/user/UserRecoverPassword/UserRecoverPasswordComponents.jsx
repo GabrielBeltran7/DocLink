@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import {
   View,
@@ -9,13 +8,12 @@ import {
   ImageBackground,
   KeyboardAvoidingView,
   Platform,
-  
 } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import ImageLogin from "../../../../image/ImageLogin/ImageLogin.png";
 import styles from "./UserRecoverPasswordComponentsStyle";
-import { sendPasswordResetEmail } from "firebase/auth";
+import { sendPasswordResetEmail, fetchSignInMethodsForEmail } from "firebase/auth";
 import { auth } from "../../../../api/firebase/FirebaseConfig/FirebaseConfig";
 import ImagenFondo from "../../../../image/BackgroundImage/BackgroundImage.png";
 
@@ -25,6 +23,7 @@ export const UserRecoverPasswordComponents = () => {
   });
 
   const [emailError, setEmailError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChangeInput = (name, value) => {
     setInputs({
@@ -38,19 +37,44 @@ export const UserRecoverPasswordComponents = () => {
     return emailRegex.test(email);
   };
 
+
+  console.log("!!!!!!!!!!!!!!!!!!", auth)
   const handlePasswordRecover = async () => {
     setEmailError("");
-
     if (!isEmailValid(input.email)) {
       setEmailError("Ingresa un correo electrónico válido");
       return;
     }
 
+    setLoading(true); // Iniciar la carga
+
     try {
+      // Verificar si el correo está registrado
+      const signInMethods = await fetchSignInMethodsForEmail(auth, input.email);
+      
+      if (signInMethods.length === 0) {
+        setEmailError("El correo no está registrado.");
+        setLoading(false); // Terminar la carga
+        return;
+      }
+
+      // Enviar el correo de recuperación si está registrado
       await sendPasswordResetEmail(auth, input.email);
-      alert("Correo enviado con éxito.");
+      alert("Correo enviado con éxito. Revisa tu bandeja de entrada.");
+      setInputs({
+        email:""
+      });
     } catch (error) {
-      alert("Error al enviar el correo, revisa que esté bien.");
+      // Manejar errores específicos
+      if (error.code === 'auth/user-not-found') {
+        setEmailError("No se encontró una cuenta con este correo.");
+      } else if (error.code === 'auth/invalid-email') {
+        setEmailError("Correo electrónico no válido.");
+      } else {
+        setEmailError("Error al enviar el correo. Inténtalo de nuevo más tarde.");
+      }
+    } finally {
+      setLoading(false); // Terminar la carga
     }
   };
 
@@ -74,6 +98,7 @@ export const UserRecoverPasswordComponents = () => {
                   keyboardType="email-address"
                   value={input.email}
                   onChangeText={(text) => handleChangeInput("email", text)}
+                  editable={!loading} // Desactivar el input durante la carga
                 />
               </View>
               {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
@@ -81,8 +106,11 @@ export const UserRecoverPasswordComponents = () => {
             <TouchableOpacity
               onPress={handlePasswordRecover}
               style={styles.button}
+              disabled={loading} // Desactivar el botón durante la carga
             >
-              <Text style={styles.textButton}>Recuperar Contraseña</Text>
+              <Text style={styles.textButton}>
+                {loading ? "Enviando..." : "Recuperar Contraseña"}
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
