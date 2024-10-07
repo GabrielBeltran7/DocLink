@@ -37,8 +37,6 @@ export const UserRecoverPasswordComponents = () => {
     return emailRegex.test(email);
   };
 
-
-  console.log("!!!!!!!!!!!!!!!!!!", auth)
   const handlePasswordRecover = async () => {
     setEmailError("");
     if (!isEmailValid(input.email)) {

@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 30,
-    marginTop: -50,
+    marginTop: -350,
     width: "90%",
     backgroundColor: "rgba(255, 255, 255, 0.0)",  // Fondo semitransparente
     borderRadius: 10,

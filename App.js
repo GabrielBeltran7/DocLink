@@ -46,10 +46,6 @@ export default function App() {
 />
 
 
-
-
-
-
              <Stack.Screen
             name="UpdateComponentsDocuments"
             component={UpdateComponentsDocuments}

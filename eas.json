@@ -2,23 +2,34 @@
   "build": {
     "preview": {
       "android": {
-        "buildType": "apk"
+        "buildType": "apk"     // Generar un APK para este perfil
       }
     },
     "preview2": {
       "android": {
-        "gradleCommand": ":app:assembleRelease"
+        "gradleCommand": ":app:assembleRelease"  // Usar el comando Gradle para generar el APK
       }
     },
     "preview3": {
-      "developmentClient": true
+      "developmentClient": true,  // Cliente de desarrollo para usar con Expo Go
+      "android": {
+        "buildType": "apk"  // Si necesitas un APK aquí también
+      }
     },
     "preview4": {
-      "distribution": "internal"
+      "distribution": "internal",  // Distribución interna
+      "android": {
+        "buildType": "apk"  // Asegurar que sea un APK
+      }
     },
-    "production": {}
+    "production": {
+      "android": {
+        "buildType": "apk"  // Asegurar que en producción se genere un APK
+      }
+    }
   }
 }
+
 
 // {
 //   "cli": {

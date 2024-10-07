@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Alert,
   ScrollView,
+  StatusBar // Importar StatusBar
 } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faEnvelope, faLock } from "@fortawesome/free-solid-svg-icons";
@@ -33,12 +34,10 @@ const LoginComponents = () => {
       [name]: value,
     });
 
-    // Limpiar error de correo cuando el usuario empieza a escribir
     if (name === "email" && emailError) {
       setEmailError("");
     }
 
-    // Limpiar error de contraseña cuando el usuario empieza a escribir
     if (name === "password" && passwordError) {
       setPasswordError("");
     }
@@ -58,41 +57,32 @@ const LoginComponents = () => {
   };
 
   const handleSignIn = async () => {
-    // Validación del correo electrónico
     if (!isEmailValid(input.email)) {
       setEmailError("Ingresa un correo válido");
       return;
     }
 
-    // Validación de la contraseña vacía
     if (input.password.trim() === "") {
       setPasswordError("Ingresa una contraseña");
       return;
     }
 
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        input.email,
-        input.password
-      );
+      await signInWithEmailAndPassword(auth, input.email, input.password);
       HomeMain();
       setInputs({
         email: "",
         password: "",
       });
     } catch (error) {
-      console.log("Error de inicio de sesión:", error); // Para depuración
-      console.log("Código de error:", error.code); // Verifica el código de error
+      console.log("Error de inicio de sesión:", error);
 
       if (error.code === "auth/invalid-email") {
         Alert.alert("Error", "El correo electrónico proporcionado es inválido.");
       } else if (error.code === "auth/user-not-found") {
-        Alert.alert("Error", "El correo electrónico no está registrado.");
+        Alert.alert("Error", "El correo electrónico no está registrado o esta mal escrito.");
       } else if (error.code === "auth/wrong-password") {
         Alert.alert("Error", "La contraseña es incorrecta.");
-      } else if (error.code === "auth/invalid-credential") {
-        Alert.alert("Alert", "El correo o la contraseñas son invalidos.");
       } else if (error.code === "auth/too-many-requests") {
         Alert.alert(
           "Error",
@@ -106,6 +96,11 @@ const LoginComponents = () => {
 
   return (
     <ImageBackground source={ImagenFondo} style={styles.backgroundImage}>
+      {/* Agregar el componente StatusBar para cambiar el color */}
+      <StatusBar
+        barStyle="light-content"  // Íconos claros (para fondos oscuros)
+        backgroundColor="black" // Color de fondo de la barra de estado (solo Android)
+      />
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         <View style={styles.container}>
           <Image source={ImageLogin} style={styles.image} />
@@ -120,9 +115,7 @@ const LoginComponents = () => {
                 onChangeText={(text) => handleChangeInput("email", text)}
               />
             </View>
-            {emailError ? (
-              <Text style={styles.errorText}>{emailError}</Text>
-            ) : null}
+            {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
             <View style={styles.iconInputContainer}>
               <FontAwesomeIcon icon={faLock} style={styles.inputIcon} />
               <TextInput
@@ -133,9 +126,7 @@ const LoginComponents = () => {
                 onChangeText={(text) => handleChangeInput("password", text)}
               />
             </View>
-            {passwordError ? (
-              <Text style={styles.errorText}>{passwordError}</Text>
-            ) : null}
+            {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
           </View>
           <Text onPress={RecoverPassword} style={styles.forgotPasswordText}>
             ¿Olvidaste tu Contraseña?{" "}
@@ -159,6 +150,7 @@ const LoginComponents = () => {
 };
 
 export default LoginComponents;
+
 
 
 
