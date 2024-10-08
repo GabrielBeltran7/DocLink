@@ -10,8 +10,11 @@ import ModalMenu from "react-native-modal";
 import styles from "./HomeModalStyle";
 import { useNavigation } from "@react-navigation/native";
 import { auth } from "../../../../api/firebase/FirebaseConfig/FirebaseConfig";
+import { useDispatch } from 'react-redux'; // Importa useDispatch para usar dispatch
+
 
 const HomeModal = () => {
+  const dispatch = useDispatch(); // Inicializa dispatch
   const navigation = useNavigation();
   const [isMenuVisible, setMenuVisible] = useState(false);
 
@@ -22,6 +25,7 @@ const HomeModal = () => {
   const deslogueo = () => {
     auth.signOut();
     navigation.navigate("LoginUser");
+    dispatch({ type: "GET_DOCUMENT_ID", payload: null }); // Llamada al dispatch
   };
 
 const registerDocuments =() =>{
