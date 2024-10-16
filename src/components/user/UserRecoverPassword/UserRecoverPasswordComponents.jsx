@@ -110,6 +110,10 @@ export const UserRecoverPasswordComponents = () => {
                 {loading ? "Enviando..." : "Recuperar Contraseña"}
               </Text>
             </TouchableOpacity>
+
+          </View>
+          <View>
+    
           </View>
         </View>
       </KeyboardAvoidingView>

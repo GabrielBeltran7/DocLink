@@ -4,7 +4,7 @@ import styles from "./LoginUserStyle";
 import { View,Text } from "react-native";
 
 export const LoginUser = ({ navigation }) => {
-  console.log(navigation);
+
   return (
     <View className={styles.container}>
       <LoginComponents />

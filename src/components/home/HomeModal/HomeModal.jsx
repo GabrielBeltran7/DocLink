@@ -51,7 +51,7 @@ const registerDocuments =() =>{
           </TouchableOpacity>
 
           <TouchableOpacity onPress={deslogueo} style={styles.menuItem}>
-            <Text style={styles.menuText}>Desloguearse</Text>
+            <Text style={styles.menuText}>Cerrar Sesion</Text>
           </TouchableOpacity>
 
         </View>

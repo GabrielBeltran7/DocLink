@@ -13,10 +13,17 @@ import { updateDocument } from "../../Redux/Actions";
 import Icon from "react-native-vector-icons/FontAwesome";
 import styles from "./UpdateComponentsDocumentsStyle";
 import ImagenFondo from "../../../image/BackgroundImage/BackgroundImage.png";
-import Communications from 'react-native-communications';
+import Communications from "react-native-communications";
+import { getAuth } from "firebase/auth"; // Importa getAuth
 
 const UpdateComponentsDocuments = () => {
+  const auth = getAuth(); // Obtén el objeto de autenticación
+  const user = auth.currentUser; // Obtén el usuario actual
+  const UserId = user ? user.uid : ""; // Asegúrate de que el usuario esté disponible antes de obtener su UID
+
   const documentState = useSelector((state) => state.documentidData);
+
+
   const dispatch = useDispatch();
 
   const [documentType, setDocumentType] = useState("");
@@ -28,6 +35,7 @@ const UpdateComponentsDocuments = () => {
   const [country, setCountry] = useState("");
   const [city, setCity] = useState("");
   const [address, setAddress] = useState("");
+  const [otherUserId, setOtherUserId] = useState("");
 
   useEffect(() => {
     if (documentState) {
@@ -40,10 +48,15 @@ const UpdateComponentsDocuments = () => {
       setCountry(documentState.country);
       setCity(documentState.city);
       setAddress(documentState.address);
+      setOtherUserId(documentState.otherUserId);
     }
   }, [documentState]);
 
   const handleUpdate = () => {
+    if (UserId !== otherUserId) {
+      Alert.alert("Apresiado Usuario", "No tienes permiso para actualizar este documento.");
+      return; // Salir de la función si no coincide
+    }
     // Validación de campos vacíos
     if (
       !documentType ||
@@ -63,7 +76,10 @@ const UpdateComponentsDocuments = () => {
     // Validación de correo electrónico
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      Alert.alert("Error", "Por favor, introduce un correo electrónico válido.");
+      Alert.alert(
+        "Error",
+        "Por favor, introduce un correo electrónico válido."
+      );
       return;
     }
 
@@ -79,9 +95,9 @@ const UpdateComponentsDocuments = () => {
       country,
       city,
       address,
+      otherUserId,
     };
 
-   
     dispatch(updateDocument(documentData));
 
     // Limpiar los campos después de un registro exitoso
@@ -94,6 +110,7 @@ const UpdateComponentsDocuments = () => {
     setCountry("");
     setCity("");
     setAddress("");
+    setOtherUserId("");
   };
 
   // Función para realizar la llamada
@@ -103,7 +120,13 @@ const UpdateComponentsDocuments = () => {
 
   // Función para enviar correo
   const handleEmail = () => {
-    Communications.email([email], null, null, "Asunto del Correo", "Cuerpo del Correo");
+    Communications.email(
+      [email],
+      null,
+      null,
+      "Asunto del Correo",
+      "Cuerpo del Correo"
+    );
   };
 
   return (

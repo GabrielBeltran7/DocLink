@@ -1,11 +1,13 @@
 import React, { useEffect } from 'react';
-import { View, BackHandler, Alert } from 'react-native';
+import { View, BackHandler, Alert, TouchableOpacity  } from 'react-native';
 import HomeNanvar from '../HomeNanvar/HomeNanvar';
 import HomeVistaContactos from '../HomeVistaContacto/HomeVistaContactos';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { useDispatch } from 'react-redux'; // Importa useDispatch para usar dispatch
 import { auth } from '../../../../api/firebase/FirebaseConfig/FirebaseConfig'; // Asegúrate de que la ruta sea correcta
 import { signOut } from 'firebase/auth';
+import styles from './HomeComponentsMainStyle'; // Asegúrate de que la ruta sea correcta
+
 
 const HomeComponentsMain = () => {
   const navigation = useNavigation(); // Para navegar
@@ -21,14 +23,14 @@ const HomeComponentsMain = () => {
       // Preguntar si el usuario desea desloguearse
       Alert.alert(
         "Cerrar sesión",
-        "¿Deseas desloguearte?",
+        "¿Deseas Cerrar Sesion?",
         [
           {
             text: "Cancelar",
             style: "cancel",
           },
           {
-            text: "Desloguearse",
+            text: "Cerrar Sesion",
             onPress: async () => {
               try {
                 await signOut(auth); // Desloguear al usuario
@@ -54,10 +56,12 @@ const HomeComponentsMain = () => {
     return () => backHandler.remove(); // Limpiar el evento al desmontar el componente
   }, [dispatch, navigation, isFocused]); // Asegúrate de incluir isFocused en las dependencias
 
+  
   return (
-    <View>
+    <View >
       <HomeNanvar />
       <HomeVistaContactos />
+      
     </View>
   );
 };
