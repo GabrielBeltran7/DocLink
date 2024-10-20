@@ -46,11 +46,10 @@
     },
     "react-native-google-mobile-ads": {
       "android_app_id": "ca-app-pub-4722408711040377~7603475730"
-    }
+    },
+    "devClient": true // Agregar esta línea para habilitar el cliente de desarrollo
   }
 }
-
-
 
 // {
 //   "expo": {
@@ -69,14 +68,26 @@
 //       "**/*"
 //     ],
 //     "ios": {
-//       "supportsTablet": true
+//       "supportsTablet": true,
+//       "bundleIdentifier": "com.gabrielbeltran777.DocLink",
+//       "infoPlist": {
+//         "NSPushNotificationUsageDescription": "Se requiere para recibir notificaciones push."
+//       }
 //     },
 //     "android": {
 //       "adaptiveIcon": {
 //         "foregroundImage": "./assets/adaptive-icon.png",
 //         "backgroundColor": "#ffffff"
 //       },
-//       "package": "com.gabrielbeltran777.DocLink"
+//       "package": "com.gabrielbeltran777.DocLink",
+//       "permissions": [
+//         "NOTIFICATIONS",
+//         "WRITE_EXTERNAL_STORAGE",
+//         "READ_EXTERNAL_STORAGE",
+//         "VIBRATE",
+//         "WAKE_LOCK"
+//       ],
+//       "useNextNotificationsApi": true // Habilitar la nueva API de notificaciones de Expo
 //     },
 //     "web": {
 //       "favicon": "./assets/favicon.png"
@@ -85,6 +96,9 @@
 //       "eas": {
 //         "projectId": "490152bf-bd2d-4afc-8cfd-2593353fbb04"
 //       }
+//     },
+//     "react-native-google-mobile-ads": {
+//       "android_app_id": "ca-app-pub-4722408711040377~7603475730"
 //     }
 //   }
 // }
