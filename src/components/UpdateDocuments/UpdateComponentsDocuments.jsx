@@ -16,13 +16,19 @@ import ImagenFondo from "../../../image/BackgroundImage/BackgroundImage.png";
 import Communications from "react-native-communications";
 import { getAuth } from "firebase/auth"; // Importa getAuth
 
+
 const UpdateComponentsDocuments = () => {
+
   const auth = getAuth(); // Obtén el objeto de autenticación
   const user = auth.currentUser; // Obtén el usuario actual
   const UserId = user ? user.uid : ""; // Asegúrate de que el usuario esté disponible antes de obtener su UID
 
   const documentState = useSelector((state) => state.documentidData);
+  const documentTypesEmail = documentState.documentType;
+  const documentNumberEmail = documentState.documentNumber;
+  const foundOrLostEmail = documentState.foundOrLost
 
+console.log("documento",documentTypesEmail)
 
   const dispatch = useDispatch();
 
@@ -77,7 +83,7 @@ const UpdateComponentsDocuments = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       Alert.alert(
-        "Error",
+        "Datos Incorrectos",
         "Por favor, introduce un correo electrónico válido."
       );
       return;
@@ -118,16 +124,24 @@ const UpdateComponentsDocuments = () => {
     Communications.phonecall(phoneNumber, true); // true para marcar automáticamente
   };
 
-  // Función para enviar correo
-  const handleEmail = () => {
-    Communications.email(
-      [email],
-      null,
-      null,
-      "Asunto del Correo",
-      "Cuerpo del Correo"
+// Función para enviar correo
+const handleEmail = () => {
+  // Formatear el cuerpo del correo con las variables
+  const asunto = ` ${documentTypesEmail} # ${documentNumberEmail} `;
+  const body = `ESTE CORREO ES CON EL FIN DE AVERIGUAR POR  ${documentTypesEmail} # ${documentNumberEmail}\n NOMBRE COMPLETO:\n NUMERO CELULAR: \n DIRECCION:\n WHATSAPP:`;
+
+ 
+
+  // Llamar a Communications.email correctamente con 5 argumentos
+  Communications.email(
+    [email],           // Para: destinatarios como arreglo
+    null,              // CC
+    null,              // BCC
+    asunto,
+    body
     );
-  };
+};
+
 
   return (
     <ImageBackground source={ImagenFondo} style={styles.backgroundImage}>

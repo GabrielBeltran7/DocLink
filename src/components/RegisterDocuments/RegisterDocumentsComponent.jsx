@@ -16,9 +16,13 @@ import styles from "./RegisterDocumentsComponentStyle";
 import ImageLogin from "../../../image/ImageLogin/ImageLogin.png";
 import ImagenFondo from "../../../image/BackgroundImage/BackgroundImage.png";
 import { getAuth } from "firebase/auth";
+import { useNavigation } from '@react-navigation/native'; 
 
 const RegisterDocumentsComponent = () => {
+  const navigation = useNavigation();
+
   
+
   const [documentType, setDocumentType] = useState("");
   const [documentNumber, setDocumentNumber] = useState("");
   const [foundOrLost, setFoundOrLost] = useState("");
@@ -83,7 +87,7 @@ const RegisterDocumentsComponent = () => {
       isDeleted: false // Inicializar como false mantiene el usuario activo"
     };
 
-    dispatch(registerDocument(documentData));
+    dispatch(registerDocument(documentData, navigation));
 
     // Limpiar los campos después de un registro exitoso
     setDocumentType("");

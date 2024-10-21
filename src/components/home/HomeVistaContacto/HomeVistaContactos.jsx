@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { View, Text, TouchableOpacity, Modal, Alert, StyleSheet } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import Icon from 'react-native-vector-icons/MaterialIcons'; // Para íconos de copiar
+import FontIcon from 'react-native-vector-icons/FontAwesome'; // Íconos de FontAwesome
+
 import FontAwesome from 'react-native-vector-icons/FontAwesome'; // Para el ícono de WhatsApp
 import { useNavigation } from '@react-navigation/native'; 
 import { getAuth } from "firebase/auth"; 
@@ -25,6 +27,7 @@ function HomeVistaContactos() {
 
   const handleViewPress = () => {
     navigation.navigate('UpdateComponentsDocuments');
+
   };
 
   const auth = getAuth(); 
@@ -81,7 +84,7 @@ function HomeVistaContactos() {
 
       <View style={styles.containerboton}>
         <TouchableOpacity style={styles.iconButton} onPress={handleViewPress}>
-          <Icon name="remove-red-eye" size={40} color="black" />
+          <FontIcon name="eye" size={40} color="black" />
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.iconButton} onPress={handleViewComent}>

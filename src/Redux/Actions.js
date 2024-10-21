@@ -113,7 +113,11 @@ export const updateDocument = (UpdateDocuments) => {
   };
 };
 
-export const registerDocument = (user) => {
+
+
+
+
+export const registerDocument = (user, navigation) => {
   return async (dispatch) => {
     try {
       const { documentNumber } = user; // Obtener el número de documento del usuario
@@ -142,8 +146,10 @@ export const registerDocument = (user) => {
         Alert.alert(
           "Documento ya Registrado",
           "El documento ya se encuentra registrado y no se puede volver a registrar. Por favor, consulta los datos.",
-          [{ text: "OK" }]
+          [{ text: "OK", onPress: () => navigation.navigate('HomeMain') }]
         );
+        
+
         return; // Salir de la función si hay un documento activo
       }
 
